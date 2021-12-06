@@ -1,0 +1,5 @@
+require "plugin"
+require "options"
+require "setup"
+require "lsp"
+require "debugger"

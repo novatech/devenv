@@ -1,0 +1,69 @@
+$include /etc/inputrc
+
+set editing-mode vi
+set bell-style none
+# adds punctuation as word delimiters
+set bind-tty-special-chars off
+
+# completion options
+set page-completions on
+set completion-ignore-case on
+set completion-map-case on
+set completion-query-items 500
+set completion-prefix-display-length 3
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
+set skip-completed-text on
+set visible-stats on
+set colored-stats on
+set match-hidden-files off
+set mark-symlinked-directories on
+
+# utf-8 stuffs
+set meta-flag on
+set input-meta on
+set output-meta on
+set convert-meta off
+
+set echo-control-characters off
+set expand-tilde off
+set history-preserve-point on
+
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+"\e[C": forward-char
+"\e[D": backward-char
+"\e[Z": menu-complete
+
+"\e[3~": delete-char
+"\e[1~": beginning-of-line
+"\e[4~": end-of-line
+
+$if mode=vi
+    set keymap vi-command
+    "gg": beginning-of-history
+    "G": end-of-history
+    "k": history-search-backward
+    "j": history-search-forward
+
+    set keymap vi-insert
+    "\C-l": clear-screen
+    "\C-w": backward-kill-word
+    # auto-complete from the history
+    "\C-p": history-search-backward
+    "\C-n": history-search-forward
+$endif
+
+$if Bash
+$endif
+
+$if Python
+$endif
+
+$if Gdb
+    "\e[15~": "continue\n"
+    "\e[21~": "next\n"
+    "\e[23~": "step\n"
+    "\eOQ": "nexti\n"
+    "\eOR": "stepi\n"
+$endif

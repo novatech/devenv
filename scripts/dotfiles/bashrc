@@ -1,0 +1,98 @@
+#!/bin/bash
+# if not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+# don't put duplicate lines in the history. See bash(1) for more options
+# ... or force ignoredups and ignorespace
+export HISTCONTROL=ignoredups:ignorespace:ignoreboth:erasedups
+export HISTIGNORE="&:[bf]g:rm:ls:pwd:cd ..:cd ~-:cd -:cd:jobs:set -x:ls:history"
+export HISTSIZE=120000
+export HISTFILESIZE=120000
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+shopt -s checkhash checkwinsize
+shopt -s dotglob extglob nocaseglob
+shopt -s huponexit checkjobs
+shopt -s cmdhist histappend histverify
+
+export TERM=xterm-256color
+
+# colored GCC warnings and errors
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+export PATH=${PATH}:~/devtools/bin:~/.local/bin
+export LANG=en_US.utf8
+
+[ -f /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion
+[ -f /etc/bash_completion ] && . /etc/bash-completion/bash_completion
+
+function git_prompt() {
+    local output
+    output="$(git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')"
+    [[ -n ${output} ]] && printf " \[\033[0;31m\]\\uf126 %s", "${output}"
+}
+
+function prompt_command() {
+    PS1="\[\033[0;37m\]\342\224\214\342\224\200\$([[ \$? != 0 ]] && echo \"[\[\033[0;31m\]\342\234\227\[\033[0;37m\]]\342\224\200\")[\[\033[0;33m\]\u\[\033[0;37m\]:\[\033[0;96m\]\h\[\033[0;37m\]]\342\224\200[\[\033[0;32m\]\w\[\033[0;37m\]]$(git_prompt)\n\[\033[0;37m\]\342\224\224\342\224\200\342\224\200\342\225\274 \[\033[0m\]"
+}
+
+PROMPT_COMMAND="prompt_command"
+
+# enable vi mode by default
+set -o vi
+
+# disable 'v' from opening EDITOR and replace it with CTRL-e
+bind -m vi-command '"v": ""'
+bind -m vi-command '"\C-e": edit-and-execute-command'
+
+NVIM_C=$(command -v nvim)
+export EDITOR=${NVIM_C:-vi}
+export VISUAL="${EDITOR}"
+
+# aliases
+alias vim='${EDITOR}'
+alias vi='${EDITOR}'
+
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    alias dir='dir --color=auto'
+    alias vdir='vdir --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+alias rm='timeout 3 rm -Iv --one-file-system'
+alias mv='timeout 8 mv -iv'
+alias cp='timeout 8 cp -iv'
+alias mkdir='mkdir -pv'
+alias less='less -FSRXc'
+alias ~='cd ~'
+alias c='clear'
+alias lr='ls -R | grep ":$" | sed -e '\''s/:$//'\'' -e '\''s/[^-][^\/]*\//--/g'\'' -e '\''s/^/   /'\'' -e '\''s/-/|/'\'' | more'
+
+export JDTLS_HOME=${HOME}/jdtls
+export WORKSPACE=${HOME}/workspace
+
+# FZF setup
+# fe [FUZZY PATTERN] - Open the selected file with the default editor
+#   - Bypass fuzzy finder if there's only one match (--select-1)
+#   - Exit if there's no match (--exit-0)
+fe() {
+    mapfile -t files < <(fzf-tmux --query="$1" --multi --select-1 --exit-0)
+    [[ -n ${files[*]} ]] && ${EDITOR:-vim} "${files[@]}"
+}
+
+fd() {
+    local dir
+    #dir=$(find ${1:-.} -path '*/\.*' -prune -o -type d -print 2>/dev/null | fzf +m) && cd "$dir"
+    dir=$(find "${1:-.}" -path '*/\.*' -prune -o -type d -print 2>/dev/null | fzf +m) && cd "${dir}" || exit
+}
+
+export FZF_DEFAULT_OPTS='--color=light,hl:12,hl+:15,info:10,bg+:4'
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
