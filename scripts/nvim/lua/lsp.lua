@@ -160,7 +160,7 @@ local on_attach = function(client, bufnr)
 end
 
 -- config that activates keymaps and enables snippet support
-local util = require "lspconfig/util"
+local lspconfig_util = require "lspconfig/util"
 local function get_lsp_config(server)
    local capabilities = vim.lsp.protocol.make_client_capabilities()
    capabilities.textDocument.colorProvider = { dynamicRegistration = false }
@@ -190,10 +190,9 @@ local function get_lsp_config(server)
       flags = { debounce_text_changes = 200 },
    }
    if server.name == "clangd" then
-      config.cmd = { server._default_options.cmd[1], "--background-index", "--std=c++11" }
       config.root_dir = function(fname)
-         return util.root_pattern("compile_commands.json", "compile_flags.txt", ".git")(fname)
-            or util.path.dirname(fname)
+         return lspconfig_util.root_pattern("compile_commands.json", "compile_flags.txt", ".git")(fname)
+            or lspconfig_util.path.dirname(fname)
       end
    end
    if server.name == "sumneko_lua" then
