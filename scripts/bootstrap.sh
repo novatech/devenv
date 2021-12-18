@@ -7,6 +7,7 @@ NVIM_VERSION=0.6.0
 DELTA_VERSION=0.9.1
 TREESITTER_VERSION=0.20.1
 SHFMT_VERSION=3.4.1
+SHELLCHECK_VERSION=0.8.0
 
 function setup_baseos() {
   microdnf install -y --nodocs \
@@ -25,10 +26,12 @@ function setup_baseos() {
     python3-virtualenv \
     npm \
     unzip \
+    xz \
     fontconfig \
     sudo
   npm i -g yarn
   ln -sn /usr/bin/python3 /usr/bin/python
+  pip3 install --upgrade pip
   sed -i 's/^LANG=.*/LANG="en_US.utf8"/' /etc/locale.conf
   /usr/sbin/useradd -m "${USR}"
   echo "%${USR} ALL=(ALL) NOPASSWD:ALL" >>/etc/sudoers
@@ -47,6 +50,8 @@ function setup_toolings() {
   cp "/tmp/scripts/shfmt" "/home/${USR}/devtools/bin/shfmt"
   curl -fL "https://github.com/jesseduffield/lazygit/releases/download/v0.31.4/lazygit_0.31.4_Linux_x86_64.tar.gz" | tar -zxvf - -C /tmp/scripts
   cp "/tmp/scripts/lazygit" "/home/${USR}/devtools/bin"
+  curl -fL https://github.com/koalaman/shellcheck/releases/download/v${SHELLCHECK_VERSION}/shellcheck-v${SHELLCHECK_VERSION}.linux.x86_64.tar.xz | tar -xJv -C /tmp/scripts
+  cp "/tmp/scripts/shellcheck-v${SHELLCHECK_VERSION}/shellcheck" "/home/${USR}/devtools/bin"
   ln -sn "/home/${USR}/devtools/nvim/bin/nvim" "/home/${USR}/devtools/bin/nvim"
   cp -r "/tmp/scripts/nvim" "/home/${USR}/.config"
   cp "/tmp/scripts/dotfiles/bashrc" "/home/${USR}/.bashrc"
@@ -57,7 +62,7 @@ function setup_toolings() {
 }
 
 function setup_user_nvim() {
-  su - "${USR}" -c 'python -m pip install --upgrade --user pip neovim pynvim'
+  su - "${USR}" -c 'python -m pip install --upgrade --user neovim pynvim'
   su - "${USR}" -c 'python -m pip install --upgrade --user wheel clang-format cmakelang debugpy pytest'
   su - "${USR}" -c '~/devtools/bin/nvim --headless +PlugInstall +qall'
   su - "${USR}" -c '~/devtools/bin/nvim --headless "+TSUpdateSync bash c cpp cmake comment dockerfile html java javascript json5 lua perl python regex toml vim query" +qall'
@@ -65,7 +70,7 @@ function setup_user_nvim() {
   su - "${USR}" -c 'fc-cache -fv ~/.fonts'
 }
 
-cleanup() {
+function cleanup() {
   microdnf clean all
   rm -rf /var/cache/yum
   rm -rf /tmp/scripts
@@ -75,3 +80,4 @@ cleanup() {
 setup_baseos
 setup_toolings
 setup_user_nvim
+cleanup
