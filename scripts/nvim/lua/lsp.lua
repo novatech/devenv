@@ -114,7 +114,7 @@ local on_attach = function(client, bufnr)
    buf_set_keymap("n", "<leader>wl", "<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<cr>", opts)
    buf_set_keymap("n", "<leader>D", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
    buf_set_keymap("n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
-   buf_set_keymap("n", "<leader>e", "<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<cr>", opts)
+   buf_set_keymap("n", "<leader>e", "<cmd>lua vim.diagnostic.show()<cr>", opts)
    buf_set_keymap("n", "<leader>q", "<cmd>lua vim.lsp.diagnostic.set_loclist()<cr>", opts)
    buf_set_keymap("n", "<leader>P", "<cmd>lua vim.lsp.buf.formatting()<cr>", opts)
    buf_set_keymap("v", "<leader>p", "<cmd>lua vim.lsp.buf.range_formatting()<cr>", opts)
@@ -125,14 +125,14 @@ local on_attach = function(client, bufnr)
       buf_set_keymap("n", "k", "<cmd>lua vim.lsp.buf.hover()<cr>", opts)
    end
 
-   if client.resolved_capabilities.document_formatting then
+   if client.server_capabilities.document_formatting then
       buf_set_keymap("n", "<leader>f", "<cmd>lua vim.lsp.buf.formatting()<cr>", opts)
    end
-   if client.resolved_capabilities.document_range_formatting then
+   if client.server_capabilities.document_range_formatting then
       buf_set_keymap("x", "<leader>fr", "<cmd>lua vim.lsp.buf.range_formatting()<cr><esc>", opts)
    end
    -- Set autocommands conditional on server_capabilities
-   if client.resolved_capabilities.document_highlight then
+   if client.server_capabilities.document_highlight then
       vim.cmd [[
       hi link LspReferenceRead Visual
       hi link LspReferenceText Visual
@@ -145,17 +145,13 @@ local on_attach = function(client, bufnr)
     ]]
    end
 
-   if client.resolved_capabilities.code_lens then
+   if client.server_capabilities.code_lens then
       vim.cmd [[
       augroup lsp_codelens
         autocmd! * <buffer>
         autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh()
       augroup END
     ]]
-   end
-
-   if client.server_capabilities.colorProvider then
-      require("lsp-documentcolors").buf_attach(bufnr, { single_column = true })
    end
 end
 
@@ -179,7 +175,7 @@ local function get_lsp_config(server)
          "additionalTextEdits",
       },
    }
-   capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
+   capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
    local config = {
       capabilities = capabilities,
