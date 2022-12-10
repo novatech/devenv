@@ -317,92 +317,92 @@ if bufferline then
 
       highlights = {
          background = {
-            guifg = colors.fg,
-            guibg = colors.black2,
+            fg = colors.fg,
+            bg = colors.black2,
          },
 
          -- buffers
          buffer_selected = {
-            guifg = colors.white,
-            guibg = colors.black,
-            gui = "bold",
+            fg = colors.white,
+            bg = colors.black,
+            bold = true,
          },
          buffer_visible = {
-            guifg = colors.gray,
-            guibg = colors.black2,
+            fg = colors.gray,
+            bg = colors.black2,
          },
 
          -- for diagnostics = "nvim_lsp"
          error = {
-            guifg = colors.gray,
-            guibg = colors.black2,
+            fg = colors.gray,
+            bg = colors.black2,
          },
          error_diagnostic = {
-            guifg = colors.gray,
-            guibg = colors.black2,
+            fg = colors.gray,
+            bg = colors.black2,
          },
 
          -- close buttons
          close_button = {
-            guifg = colors.gray,
-            guibg = colors.black2,
+            fg = colors.gray,
+            bg = colors.black2,
          },
          close_button_visible = {
-            guifg = colors.gray,
-            guibg = colors.black2,
+            fg = colors.gray,
+            bg = colors.black2,
          },
          close_button_selected = {
-            guifg = colors.red,
-            guibg = colors.black,
+            fg = colors.red,
+            bg = colors.black,
          },
          fill = {
-            guifg = colors.fg,
-            guibg = colors.black2,
+            fg = colors.fg,
+            bg = colors.black2,
          },
          indicator_selected = {
-            guifg = colors.black,
-            guibg = colors.black,
+            fg = colors.black,
+            bg = colors.black,
          },
 
          -- modified
          modified = {
-            guifg = colors.red,
-            guibg = colors.black2,
+            fg = colors.red,
+            bg = colors.black2,
          },
          modified_visible = {
-            guifg = colors.red,
-            guibg = colors.black2,
+            fg = colors.red,
+            bg = colors.black2,
          },
          modified_selected = {
-            guifg = colors.green,
-            guibg = colors.black,
+            fg = colors.green,
+            bg = colors.black,
          },
 
          -- separators
          separator = {
-            guifg = colors.black2,
-            guibg = colors.black2,
+            fg = colors.black2,
+            bg = colors.black2,
          },
          separator_visible = {
-            guifg = colors.black2,
-            guibg = colors.black2,
+            fg = colors.black2,
+            bg = colors.black2,
          },
          separator_selected = {
-            guifg = colors.black2,
-            guibg = colors.black2,
+            fg = colors.black2,
+            bg = colors.black2,
          },
          -- tabs
          tab = {
-            guifg = colors.gray,
-            guibg = colors.black2,
+            fg = colors.gray,
+            bg = colors.black2,
          },
          tab_selected = {
-            guifg = colors.black2,
-            guibg = colors.darkblue,
+            fg = colors.black2,
+            bg = colors.darkblue,
          },
          tab_close = {
-            guifg = colors.red,
-            guibg = colors.black,
+            fg = colors.red,
+            bg = colors.black,
          },
       },
    }

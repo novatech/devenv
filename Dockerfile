@@ -1,10 +1,10 @@
-FROM redhat/ubi8-minimal:latest
+FROM redhat/ubi9-minimal:latest
 
 COPY ./scripts/ /tmp/scripts
 
 ENV TERM=xterm-256color
 
-RUN sh /tmp/scripts/bootstrap.sh
+RUN bash /tmp/scripts/bootstrap.sh
 
 USER azwan
 
